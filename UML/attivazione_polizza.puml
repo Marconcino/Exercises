@@ -1,0 +1,17 @@
+@startuml
+title Use Case Diagram - Attivazione Polizza Utente
+
+actor Utente
+actor UfficioPolizze
+actor DipartimentoIT
+
+usecase "Attivazione Nuova Polizza" as UC1
+usecase "Attivazione Account Utente" as UC2
+
+' Relazioni attori - 
+Utente --> UC1 
+UfficioPolizze --> UC1
+UfficioPolizze --> UC2
+DipartimentoIT --> UC2
+
+@enduml

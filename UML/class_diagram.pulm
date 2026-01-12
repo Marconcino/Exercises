@@ -1,0 +1,28 @@
+@startuml
+title Esempio semplice di diagramma delle classi del Sistema Gestionale SmartAllianz
+
+class Utente {
++nome: String
++cognome: String
++id: Int
++id_polizza(ufficio: Ufficio)
+}
+
+class Ufficio{
++id_ufficio: Int
+}
+
+class DipartimentoIT{
++id_programmatore: Int
++nome: String
++cognome: String
+}
+
+class Polizza{
++id_polizza: Int
+}
+
+Utente --> Polizza : richiesta 
+Ufficio --> Polizza : richiesta
+
+@enduml

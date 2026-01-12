@@ -1,0 +1,20 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml 
+
+
+title C4 – System Context: Sistema Gestionale SmartAllianz
+
+Person(utente, "Utente", "Invia Documenti, Richiede polizza")
+Person(ufficiopolizze, "Ufficio Polizze", "Riceve Documenti", "Attiva Polizza", "Richiede Account")
+Person(dipartimentoIT, "Riceve Richiesta Account", "Attiva Account")
+System(gestionale, "Sistema Gestionale SmartAllianz", "Permette di arrivare e gestire polizze")
+
+System_Ext(backend, "Sistema Backend", "Gestisce Utenti")
+System_Ext(email, "Servizio Email", "Invia notifiche di scadenza e conferme polizza attiva")
+
+Rel(utente, "Richiede Polizza")
+Rel(utente, "Gestisce prestiti e disponibilità")
+
+Rel(biblioteca, catalogo, "Recupera informazioni sui libri")
+Rel(biblioteca, email, "Invia notifiche di prestito e scadenza")
+@enduml
