@@ -1,0 +1,4 @@
+@startuml
+Mario -> Laura : Ciao Laura
+Laura --> Mario : Ciao Mario
+@enduml
