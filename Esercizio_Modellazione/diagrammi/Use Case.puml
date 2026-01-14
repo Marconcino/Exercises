@@ -1,0 +1,17 @@
+@startuml
+title Use Case Diagram - Sistema Ticketing Cinema
+
+actor Cliente
+actor SistemaInformatico
+actor Banca
+
+usecase "Ticketing Cinema" as UC1 
+usecase "Pagamento Elettronico" as UC3
+
+' Relazioni attori '
+Cliente --> UC1
+UC3 --> Banca
+SistemaInformatico --> UC3
+SistemaInformatico --> UC1
+
+@enduml

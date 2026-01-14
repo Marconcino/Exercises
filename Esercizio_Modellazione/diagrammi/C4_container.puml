@@ -1,0 +1,38 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title C4 - Container Diagram
+title C4 Container Diagram - Sistema Ticketing Cinema
+
+' === PERSONE ===
+Person(cliente, "Cliente", "Utente che acquista biglietti per il cinema")
+
+' === SISTEMA ===
+System_Boundary(ticketing, "Sistema Ticketing Cinema") {
+
+    Container(web, "Web App Cinema", "React / HTML / CSS", "Interfaccia web per consultazione film e acquisto biglietti")
+
+    Container(mobile, "Mobile App Cinema", "Android / iOS", "App mobile per acquisto e gestione biglietti")
+
+    Container(api, "Backend API", "Python + FastAPI", "Gestisce logica di business, prenotazioni, pagamenti e biglietti")
+
+    ContainerDb(db, "Database Cinema", "MySQL", "Memorizza utenti, film, prenotazioni, biglietti e pagamenti")
+}
+
+' === SISTEMI ESTERNI ===
+System_Ext(banca, "Sistema Bancario", "Gestisce i pagamenti elettronici")
+
+System_Ext(email, "Email Service", "Invio email di conferma e biglietti")
+
+' === RELAZIONI ===
+Rel(cliente, web, "Usa", "HTTPS")
+Rel(cliente, mobile, "Usa", "HTTPS")
+
+Rel(web, api, "Invia richieste", "REST/HTTPS")
+Rel(mobile, api, "Invia richieste", "REST/HTTPS")
+
+Rel(api, db, "Legge/Scrive dati", "SQL")
+Rel(api, banca, "Richiede pagamento", "HTTPS API")
+Rel(api, email, "Invia notifiche", "SMTP / API")
+
+@enduml

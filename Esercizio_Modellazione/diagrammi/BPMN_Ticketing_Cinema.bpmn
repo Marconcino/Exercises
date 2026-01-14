@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="sid-cinema-ticketing" targetNamespace="http://bpmn.io/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.10.1">
+  <collaboration id="Collaboration_Cinema_Ticketing">
+    <participant id="Participant_Cliente" name="Cliente" processRef="Process_Cliente" />
+    <participant id="Participant_Sistema" name="Sistema Informatico" processRef="Process_Sistema" />
+    <participant id="Participant_Banca" name="Banca" processRef="Process_Banca" />
+    <messageFlow id="MessageFlow_01" sourceRef="Task_Cliente_01" targetRef="Task_Sistema_01" />
+    <messageFlow id="MessageFlow_02" sourceRef="Task_Sistema_02" targetRef="Task_Cliente_02" />
+    <messageFlow id="MessageFlow_03" sourceRef="Task_Cliente_03" targetRef="Task_Sistema_03" />
+    <messageFlow id="MessageFlow_04" sourceRef="Task_Sistema_04" targetRef="Task_Cliente_04" />
+    <messageFlow id="MessageFlow_05" sourceRef="Task_Cliente_05" targetRef="Task_Sistema_05" />
+    <messageFlow id="MessageFlow_06" sourceRef="Task_Sistema_06" targetRef="Task_Banca_01" />
+    <messageFlow id="MessageFlow_07" sourceRef="Task_Banca_01" targetRef="Task_Sistema_07" />
+    <messageFlow id="MessageFlow_08" sourceRef="Task_Sistema_08" targetRef="Task_Cliente_06" />
+  </collaboration>
+  <process id="Process_Cliente" name="Cliente" isExecutable="false">
+    <exclusiveGateway id="Gateway_Cliente_02" name="Scegliere alternativa?">
+      <incoming>Flow_C09</incoming>
+      <outgoing>Flow_C11</outgoing>
+      <outgoing>Flow_C12</outgoing>
+    </exclusiveGateway>
+    <startEvent id="StartEvent_Cliente" name="Acquistiamo un biglietto per un film al Cinema">
+      <outgoing>Flow_C01</outgoing>
+    </startEvent>
+    <task id="Task_Cliente_01" name="Accedere al sistema">
+      <incoming>Flow_C01</incoming>
+      <outgoing>Flow_C02</outgoing>
+    </task>
+    <task id="Task_Cliente_02" name="Visualizzare catalogo film">
+      <incoming>Flow_C02</incoming>
+      <outgoing>Flow_C03</outgoing>
+    </task>
+    <task id="Task_Cliente_03" name="Selezionare film">
+      <incoming>Flow_C03</incoming>
+      <incoming>Flow_C11</incoming>
+      <outgoing>Flow_C04</outgoing>
+    </task>
+    <task id="Task_Cliente_04" name="Verificare disponibilità">
+      <incoming>Flow_C04</incoming>
+      <outgoing>Flow_C05</outgoing>
+    </task>
+    <task id="Task_Cliente_07" name="Valutare alternative">
+      <incoming>Flow_C10</incoming>
+      <outgoing>Flow_C09</outgoing>
+    </task>
+    <endEvent id="EndEvent_Cliente_Cancel" name="Acquisto annullato">
+      <incoming>Flow_C12</incoming>
+    </endEvent>
+    <task id="Task_Cliente_06" name="Ricevere biglietto via email">
+      <incoming>Flow_C07</incoming>
+      <outgoing>Flow_C08</outgoing>
+    </task>
+    <endEvent id="EndEvent_Cliente_Success" name="Biglietto acquistato">
+      <incoming>Flow_C08</incoming>
+    </endEvent>
+    <task id="Task_Cliente_05" name="Selezionare posto e confermare">
+      <incoming>Flow_C06</incoming>
+      <outgoing>Flow_C07</outgoing>
+    </task>
+    <exclusiveGateway id="Gateway_Cliente_01" name="Posti disponibili?">
+      <incoming>Flow_C05</incoming>
+      <outgoing>Flow_C06</outgoing>
+      <outgoing>Flow_C10</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="Flow_C09" sourceRef="Task_Cliente_07" targetRef="Gateway_Cliente_02" />
+    <sequenceFlow id="Flow_C11" name="Sì" sourceRef="Gateway_Cliente_02" targetRef="Task_Cliente_03" />
+    <sequenceFlow id="Flow_C12" name="No" sourceRef="Gateway_Cliente_02" targetRef="EndEvent_Cliente_Cancel" />
+    <sequenceFlow id="Flow_C01" sourceRef="StartEvent_Cliente" targetRef="Task_Cliente_01" />
+    <sequenceFlow id="Flow_C02" sourceRef="Task_Cliente_01" targetRef="Task_Cliente_02" />
+    <sequenceFlow id="Flow_C03" sourceRef="Task_Cliente_02" targetRef="Task_Cliente_03" />
+    <sequenceFlow id="Flow_C04" sourceRef="Task_Cliente_03" targetRef="Task_Cliente_04" />
+    <sequenceFlow id="Flow_C05" sourceRef="Task_Cliente_04" targetRef="Gateway_Cliente_01" />
+    <sequenceFlow id="Flow_C10" name="No" sourceRef="Gateway_Cliente_01" targetRef="Task_Cliente_07" />
+    <sequenceFlow id="Flow_C07" sourceRef="Task_Cliente_05" targetRef="Task_Cliente_06" />
+    <sequenceFlow id="Flow_C08" sourceRef="Task_Cliente_06" targetRef="EndEvent_Cliente_Success" />
+    <sequenceFlow id="Flow_C06" name="Sì" sourceRef="Gateway_Cliente_01" targetRef="Task_Cliente_05" />
+  </process>
+  <process id="Process_Sistema" name="Sistema Informatico" isExecutable="false">
+    <exclusiveGateway id="Gateway_Sistema_01" name="Posti disponibili?">
+      <incoming>Flow_S05</incoming>
+      <outgoing>Flow_S06</outgoing>
+      <outgoing>Flow_S12</outgoing>
+    </exclusiveGateway>
+    <task id="Task_Sistema_05" name="Ricevere selezione posto">
+      <incoming>Flow_S06</incoming>
+      <outgoing>Flow_S07</outgoing>
+    </task>
+    <task id="Task_Sistema_06" name="Inviare richiesta pagamento">
+      <incoming>Flow_S07</incoming>
+      <outgoing>Flow_S08</outgoing>
+    </task>
+    <task id="Task_Sistema_07" name="Ricevere esito pagamento">
+      <incoming>Flow_S08</incoming>
+      <outgoing>Flow_S09</outgoing>
+    </task>
+    <exclusiveGateway id="Gateway_Sistema_02" name="Pagamento OK?">
+      <incoming>Flow_S09</incoming>
+      <outgoing>Flow_S10</outgoing>
+      <outgoing>Flow_S13</outgoing>
+    </exclusiveGateway>
+    <task id="Task_Sistema_10" name="Annullare prenotazione">
+      <incoming>Flow_S13</incoming>
+      <outgoing>Flow_S15</outgoing>
+    </task>
+    <endEvent id="EndEvent_Sistema_NoSeats" name="Posti non disponibili">
+      <incoming>Flow_S14</incoming>
+    </endEvent>
+    <endEvent id="EndEvent_Sistema_PaymentFail" name="Pagamento fallito">
+      <incoming>Flow_S15</incoming>
+    </endEvent>
+    <startEvent id="StartEvent_Sistema" name="Richiesta accesso">
+      <outgoing>Flow_S01</outgoing>
+    </startEvent>
+    <task id="Task_Sistema_01" name="Autenticare utente">
+      <incoming>Flow_S01</incoming>
+      <outgoing>Flow_S02</outgoing>
+    </task>
+    <task id="Task_Sistema_02" name="Mostrare catalogo film">
+      <incoming>Flow_S02</incoming>
+      <outgoing>Flow_S03</outgoing>
+    </task>
+    <task id="Task_Sistema_03" name="Ricevere selezione film">
+      <incoming>Flow_S03</incoming>
+      <outgoing>Flow_S04</outgoing>
+    </task>
+    <task id="Task_Sistema_04" name="Verificare disponibilità posti">
+      <incoming>Flow_S04</incoming>
+      <outgoing>Flow_S05</outgoing>
+    </task>
+    <task id="Task_Sistema_09" name="Notificare indisponibilità">
+      <incoming>Flow_S12</incoming>
+      <outgoing>Flow_S14</outgoing>
+    </task>
+    <endEvent id="EndEvent_Sistema_Success" name="Transazione completata">
+      <incoming>Flow_S11</incoming>
+    </endEvent>
+    <task id="Task_Sistema_08" name="Generare e inviare biglietto">
+      <incoming>Flow_S10</incoming>
+      <outgoing>Flow_S11</outgoing>
+    </task>
+    <sequenceFlow id="Flow_S05" sourceRef="Task_Sistema_04" targetRef="Gateway_Sistema_01" />
+    <sequenceFlow id="Flow_S06" name="Sì" sourceRef="Gateway_Sistema_01" targetRef="Task_Sistema_05" />
+    <sequenceFlow id="Flow_S12" name="No" sourceRef="Gateway_Sistema_01" targetRef="Task_Sistema_09" />
+    <sequenceFlow id="Flow_S07" sourceRef="Task_Sistema_05" targetRef="Task_Sistema_06" />
+    <sequenceFlow id="Flow_S08" sourceRef="Task_Sistema_06" targetRef="Task_Sistema_07" />
+    <sequenceFlow id="Flow_S09" sourceRef="Task_Sistema_07" targetRef="Gateway_Sistema_02" />
+    <sequenceFlow id="Flow_S10" name="Sì" sourceRef="Gateway_Sistema_02" targetRef="Task_Sistema_08" />
+    <sequenceFlow id="Flow_S13" name="No" sourceRef="Gateway_Sistema_02" targetRef="Task_Sistema_10" />
+    <sequenceFlow id="Flow_S15" sourceRef="Task_Sistema_10" targetRef="EndEvent_Sistema_PaymentFail" />
+    <sequenceFlow id="Flow_S14" sourceRef="Task_Sistema_09" targetRef="EndEvent_Sistema_NoSeats" />
+    <sequenceFlow id="Flow_S01" sourceRef="StartEvent_Sistema" targetRef="Task_Sistema_01" />
+    <sequenceFlow id="Flow_S02" sourceRef="Task_Sistema_01" targetRef="Task_Sistema_02" />
+    <sequenceFlow id="Flow_S03" sourceRef="Task_Sistema_02" targetRef="Task_Sistema_03" />
+    <sequenceFlow id="Flow_S04" sourceRef="Task_Sistema_03" targetRef="Task_Sistema_04" />
+    <sequenceFlow id="Flow_S11" sourceRef="Task_Sistema_08" targetRef="EndEvent_Sistema_Success" />
+  </process>
+  <process id="Process_Banca" name="Banca" isExecutable="false">
+    <task id="Task_Banca_01" name="Elaborare pagamento elettronico">
+      <incoming>Flow_B01</incoming>
+      <outgoing>Flow_B02</outgoing>
+    </task>
+    <exclusiveGateway id="Gateway_Banca_01" name="Fondi sufficienti?">
+      <incoming>Flow_B02</incoming>
+      <outgoing>Flow_B03</outgoing>
+      <outgoing>Flow_B04</outgoing>
+    </exclusiveGateway>
+    <endEvent id="EndEvent_Banca_Success" name="Pagamento autorizzato">
+      <incoming>Flow_B03</incoming>
+    </endEvent>
+    <endEvent id="EndEvent_Banca_Fail" name="Pagamento rifiutato">
+      <incoming>Flow_B04</incoming>
+    </endEvent>
+    <startEvent id="StartEvent_Banca" name="Richiesta pagamento">
+      <outgoing>Flow_B01</outgoing>
+    </startEvent>
+    <sequenceFlow id="Flow_B01" sourceRef="StartEvent_Banca" targetRef="Task_Banca_01" />
+    <sequenceFlow id="Flow_B02" sourceRef="Task_Banca_01" targetRef="Gateway_Banca_01" />
+    <sequenceFlow id="Flow_B03" name="Sì" sourceRef="Gateway_Banca_01" targetRef="EndEvent_Banca_Success" />
+    <sequenceFlow id="Flow_B04" name="No" sourceRef="Gateway_Banca_01" targetRef="EndEvent_Banca_Fail" />
+  </process>
+  <bpmndi:BPMNDiagram id="BpmnDiagram_Cinema">
+    <bpmndi:BPMNPlane id="BpmnPlane_Cinema" bpmnElement="Collaboration_Cinema_Ticketing">
+      <bpmndi:BPMNShape id="Participant_Cliente_di" bpmnElement="Participant_Cliente" isHorizontal="true">
+        <omgdc:Bounds x="160" y="80" width="1520" height="420" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Cliente_02_di" bpmnElement="Gateway_Cliente_02" isMarkerVisible="true">
+        <omgdc:Bounds x="745" y="355" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="741" y="317.5" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Cliente_di" bpmnElement="StartEvent_Cliente">
+        <omgdc:Bounds x="262" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="244" y="246" width="74" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_01_di" bpmnElement="Task_Cliente_01">
+        <omgdc:Bounds x="360" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_02_di" bpmnElement="Task_Cliente_02">
+        <omgdc:Bounds x="490" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_03_di" bpmnElement="Task_Cliente_03">
+        <omgdc:Bounds x="620" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_04_di" bpmnElement="Task_Cliente_04">
+        <omgdc:Bounds x="780" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_07_di" bpmnElement="Task_Cliente_07">
+        <omgdc:Bounds x="1000" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Cliente_Cancel_di" bpmnElement="EndEvent_Cliente_Cancel">
+        <omgdc:Bounds x="882" y="412" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="856" y="448" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_06_di" bpmnElement="Task_Cliente_06">
+        <omgdc:Bounds x="1400" y="200" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Cliente_Success_di" bpmnElement="EndEvent_Cliente_Success">
+        <omgdc:Bounds x="1592" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1585" y="288" width="51" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Cliente_05_di" bpmnElement="Task_Cliente_05">
+        <omgdc:Bounds x="1200" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Cliente_01_di" bpmnElement="Gateway_Cliente_01" isMarkerVisible="true">
+        <omgdc:Bounds x="1035" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1019" y="178" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_C01_di" bpmnElement="Flow_C01">
+        <omgdi:waypoint x="298" y="220" />
+        <omgdi:waypoint x="360" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C02_di" bpmnElement="Flow_C02">
+        <omgdi:waypoint x="460" y="220" />
+        <omgdi:waypoint x="490" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C03_di" bpmnElement="Flow_C03">
+        <omgdi:waypoint x="590" y="220" />
+        <omgdi:waypoint x="620" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C04_di" bpmnElement="Flow_C04">
+        <omgdi:waypoint x="720" y="220" />
+        <omgdi:waypoint x="780" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C05_di" bpmnElement="Flow_C05">
+        <omgdi:waypoint x="880" y="220" />
+        <omgdi:waypoint x="1035" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C06_di" bpmnElement="Flow_C06">
+        <omgdi:waypoint x="1085" y="220" />
+        <omgdi:waypoint x="1143" y="220" />
+        <omgdi:waypoint x="1143" y="240" />
+        <omgdi:waypoint x="1200" y="240" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1086" y="202" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C07_di" bpmnElement="Flow_C07">
+        <omgdi:waypoint x="1300" y="240" />
+        <omgdi:waypoint x="1400" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C08_di" bpmnElement="Flow_C08">
+        <omgdi:waypoint x="1500" y="240" />
+        <omgdi:waypoint x="1546" y="240" />
+        <omgdi:waypoint x="1546" y="270" />
+        <omgdi:waypoint x="1592" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C09_di" bpmnElement="Flow_C09">
+        <omgdi:waypoint x="1000" y="380" />
+        <omgdi:waypoint x="795" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C10_di" bpmnElement="Flow_C10">
+        <omgdi:waypoint x="1060" y="245" />
+        <omgdi:waypoint x="1060" y="293" />
+        <omgdi:waypoint x="1050" y="293" />
+        <omgdi:waypoint x="1050" y="340" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1068" y="251" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C11_di" bpmnElement="Flow_C11">
+        <omgdi:waypoint x="745" y="380" />
+        <omgdi:waypoint x="670" y="380" />
+        <omgdi:waypoint x="670" y="260" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="702" y="355" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_C12_di" bpmnElement="Flow_C12">
+        <omgdi:waypoint x="770" y="405" />
+        <omgdi:waypoint x="770" y="430" />
+        <omgdi:waypoint x="882" y="430" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="826" y="439" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_Sistema_di" bpmnElement="Participant_Sistema" isHorizontal="true">
+        <omgdc:Bounds x="160" y="500" width="1520" height="410" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Sistema_01_di" bpmnElement="Gateway_Sistema_01" isMarkerVisible="true">
+        <omgdc:Bounds x="865" y="585" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="849" y="561" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_05_di" bpmnElement="Task_Sistema_05">
+        <omgdc:Bounds x="950" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_06_di" bpmnElement="Task_Sistema_06">
+        <omgdc:Bounds x="1080" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_07_di" bpmnElement="Task_Sistema_07">
+        <omgdc:Bounds x="1210" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Sistema_02_di" bpmnElement="Gateway_Sistema_02" isMarkerVisible="true">
+        <omgdc:Bounds x="1345" y="585" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1329" y="563" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_10_di" bpmnElement="Task_Sistema_10">
+        <omgdc:Bounds x="1320" y="680" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Sistema_NoSeats_di" bpmnElement="EndEvent_Sistema_NoSeats">
+        <omgdc:Bounds x="1022" y="702" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1015" y="664.5" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Sistema_PaymentFail_di" bpmnElement="EndEvent_Sistema_PaymentFail">
+        <omgdc:Bounds x="1482" y="702" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1458" y="738" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Sistema_di" bpmnElement="StartEvent_Sistema">
+        <omgdc:Bounds x="242" y="642" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="216" y="678" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_01_di" bpmnElement="Task_Sistema_01">
+        <omgdc:Bounds x="340" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_02_di" bpmnElement="Task_Sistema_02">
+        <omgdc:Bounds x="470" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_03_di" bpmnElement="Task_Sistema_03">
+        <omgdc:Bounds x="600" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_04_di" bpmnElement="Task_Sistema_04">
+        <omgdc:Bounds x="730" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_09_di" bpmnElement="Task_Sistema_09">
+        <omgdc:Bounds x="860" y="700" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Sistema_Success_di" bpmnElement="EndEvent_Sistema_Success">
+        <omgdc:Bounds x="1582" y="592" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1571" y="628" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Sistema_08_di" bpmnElement="Task_Sistema_08">
+        <omgdc:Bounds x="1450" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_S01_di" bpmnElement="Flow_S01">
+        <omgdi:waypoint x="278" y="660" />
+        <omgdi:waypoint x="340" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S02_di" bpmnElement="Flow_S02">
+        <omgdi:waypoint x="440" y="660" />
+        <omgdi:waypoint x="470" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S03_di" bpmnElement="Flow_S03">
+        <omgdi:waypoint x="570" y="660" />
+        <omgdi:waypoint x="600" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S04_di" bpmnElement="Flow_S04">
+        <omgdi:waypoint x="700" y="660" />
+        <omgdi:waypoint x="730" y="660" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S05_di" bpmnElement="Flow_S05">
+        <omgdi:waypoint x="830" y="660" />
+        <omgdi:waypoint x="848" y="660" />
+        <omgdi:waypoint x="848" y="610" />
+        <omgdi:waypoint x="865" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S06_di" bpmnElement="Flow_S06">
+        <omgdi:waypoint x="915" y="610" />
+        <omgdi:waypoint x="950" y="610" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="927" y="585" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S07_di" bpmnElement="Flow_S07">
+        <omgdi:waypoint x="1050" y="610" />
+        <omgdi:waypoint x="1080" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S08_di" bpmnElement="Flow_S08">
+        <omgdi:waypoint x="1180" y="610" />
+        <omgdi:waypoint x="1210" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S09_di" bpmnElement="Flow_S09">
+        <omgdi:waypoint x="1310" y="610" />
+        <omgdi:waypoint x="1345" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S10_di" bpmnElement="Flow_S10">
+        <omgdi:waypoint x="1395" y="610" />
+        <omgdi:waypoint x="1450" y="610" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1418" y="585" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S11_di" bpmnElement="Flow_S11">
+        <omgdi:waypoint x="1550" y="610" />
+        <omgdi:waypoint x="1582" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S12_di" bpmnElement="Flow_S12">
+        <omgdi:waypoint x="890" y="635" />
+        <omgdi:waypoint x="890" y="668" />
+        <omgdi:waypoint x="910" y="668" />
+        <omgdi:waypoint x="910" y="700" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="918" y="675" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S13_di" bpmnElement="Flow_S13">
+        <omgdi:waypoint x="1370" y="635" />
+        <omgdi:waypoint x="1370" y="680" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="1378" y="648" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S14_di" bpmnElement="Flow_S14">
+        <omgdi:waypoint x="960" y="740" />
+        <omgdi:waypoint x="991" y="740" />
+        <omgdi:waypoint x="991" y="720" />
+        <omgdi:waypoint x="1022" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_S15_di" bpmnElement="Flow_S15">
+        <omgdi:waypoint x="1420" y="720" />
+        <omgdi:waypoint x="1482" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_Banca_di" bpmnElement="Participant_Banca" isHorizontal="true">
+        <omgdc:Bounds x="160" y="910" width="730" height="320" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Banca_01_di" bpmnElement="Task_Banca_01">
+        <omgdc:Bounds x="390" y="990" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Banca_01_di" bpmnElement="Gateway_Banca_01" isMarkerVisible="true">
+        <omgdc:Bounds x="575" y="1005" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="558" y="981" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Banca_Success_di" bpmnElement="EndEvent_Banca_Success">
+        <omgdc:Bounds x="702" y="1012" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="692" y="1048" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Banca_Fail_di" bpmnElement="EndEvent_Banca_Fail">
+        <omgdc:Bounds x="582" y="1122" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="572" y="1158" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_Banca_di" bpmnElement="StartEvent_Banca">
+        <omgdc:Bounds x="252" y="1012" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="242" y="1048" width="56" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_B01_di" bpmnElement="Flow_B01">
+        <omgdi:waypoint x="288" y="1030" />
+        <omgdi:waypoint x="390" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B02_di" bpmnElement="Flow_B02">
+        <omgdi:waypoint x="490" y="1030" />
+        <omgdi:waypoint x="575" y="1030" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B03_di" bpmnElement="Flow_B03">
+        <omgdi:waypoint x="625" y="1030" />
+        <omgdi:waypoint x="702" y="1030" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="659" y="1005" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_B04_di" bpmnElement="Flow_B04">
+        <omgdi:waypoint x="600" y="1055" />
+        <omgdi:waypoint x="600" y="1122" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="608" y="1076" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_01_di" bpmnElement="MessageFlow_01">
+        <omgdi:waypoint x="410" y="260" />
+        <omgdi:waypoint x="410" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_02_di" bpmnElement="MessageFlow_02">
+        <omgdi:waypoint x="520" y="620" />
+        <omgdi:waypoint x="520" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_03_di" bpmnElement="MessageFlow_03">
+        <omgdi:waypoint x="670" y="260" />
+        <omgdi:waypoint x="670" y="620" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_04_di" bpmnElement="MessageFlow_04">
+        <omgdi:waypoint x="820" y="620" />
+        <omgdi:waypoint x="820" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_05_di" bpmnElement="MessageFlow_05">
+        <omgdi:waypoint x="1250" y="280" />
+        <omgdi:waypoint x="1250" y="453" />
+        <omgdi:waypoint x="1000" y="453" />
+        <omgdi:waypoint x="1000" y="570" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_06_di" bpmnElement="MessageFlow_06">
+        <omgdi:waypoint x="1130" y="650" />
+        <omgdi:waypoint x="1130" y="800" />
+        <omgdi:waypoint x="420" y="800" />
+        <omgdi:waypoint x="420" y="990" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_07_di" bpmnElement="MessageFlow_07">
+        <omgdi:waypoint x="460" y="990" />
+        <omgdi:waypoint x="460" y="850" />
+        <omgdi:waypoint x="1260" y="850" />
+        <omgdi:waypoint x="1260" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_08_di" bpmnElement="MessageFlow_08">
+        <omgdi:waypoint x="1480" y="570" />
+        <omgdi:waypoint x="1480" y="280" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

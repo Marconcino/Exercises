@@ -1,0 +1,117 @@
+@startuml
+title Deployment Diagram - Sistema Ticketing Cinema
+
+' DISPOSITIVI CLIENT
+node "Smartphone Android" <<device>> {
+    artifact "App Cinema\n(Android)" as AppAndroid
+    note right of AppAndroid
+        • SDK Android 12+
+        • Kotlin/Java
+    end note
+}
+
+node "iPhone/iPad" <<device>> {
+    artifact "App Cinema\n(iOS)" as AppIOS
+    note right of AppIOS
+        • iOS 15+
+        • Swift
+    end note
+}
+
+node "Laptop/Desktop" <<device>> {
+    artifact "Browser Web\n(Chrome/Firefox/Safari)" as Browser
+    artifact "Web App Cinema" as WebApp
+    Browser -- WebApp
+    note right of WebApp
+        • HTML5/CSS3
+        • JavaScript/React
+    end note
+}
+
+' SERVER APPLICATIVO
+node "Application Server" <<Linux Ubuntu 22.04 LTS>> {
+    component "Nginx\nWeb Server" as Nginx <<nginx:1.24>> {
+        note right
+            • Reverse Proxy
+            • Load Balancer
+            • Port 80/443
+        end note
+    }
+    
+    component "FastAPI Backend" as FastAPI <<Python 3.11>> {
+        artifact "API REST\nTicketing" as API
+        note right of API
+            • Autenticazione
+            • Gestione Film
+            • Prenotazioni
+            • Pagamenti
+            • Biglietti
+        end note
+    }
+    
+    note bottom of "Application Server"
+        **Risorse Server:**
+        • CPU: 4 vCPU
+        • RAM: 8 GB
+        • Storage: 100 GB SSD
+        • OS: Linux Ubuntu 22.04 LTS
+    end note
+}
+
+' DATABASE SERVER
+node "Database Server" <<Linux Ubuntu 22.04 LTS>> {
+    database "MySQL 8.0" as MySQL {
+        storage "cinema_db" as DB
+        note right of DB
+            **Tabelle principali:**
+            • users
+            • movies
+            • bookings
+            • tickets
+            • payments
+        end note
+    }
+    
+    note bottom of "Database Server"
+        **Risorse DB:**
+        • CPU: 2 vCPU
+        • RAM: 4 GB
+        • Storage: 200 GB SSD
+        • Backup giornaliero
+    end note
+}
+
+' SERVIZI ESTERNI
+cloud "Servizi Esterni" {
+    node "Gateway Pagamenti" <<HTTPS>> {
+        component "Stripe/PayPal API" as PaymentGW
+    }
+    
+    node "Servizio Email" <<SMTP>> {
+        component "SendGrid/AWS SES" as EmailService
+    }
+}
+
+' CONNESSIONI CLIENT -> SERVER
+AppAndroid --> Nginx : HTTPS/REST\n(Port 443)
+AppIOS --> Nginx : HTTPS/REST\n(Port 443)
+WebApp --> Nginx : HTTPS/REST\n(Port 443)
+
+' CONNESSIONI INTERNE SERVER
+Nginx --> FastAPI : HTTP\n(Port 8000)
+FastAPI --> MySQL : TCP/IP\n(Port 3306)
+
+' CONNESSIONI SERVIZI ESTERNI
+FastAPI --> PaymentGW : HTTPS API
+FastAPI --> EmailService : SMTP/API
+
+' PROTOCOLLI
+note as N1
+    **Protocolli di comunicazione:**
+    • Client ↔ Server: HTTPS/TLS 1.3
+    • Server ↔ DB: MySQL Protocol (TCP)
+    • Server ↔ Payment: REST API (HTTPS)
+    • Server ↔ Email: SMTP/API (TLS)
+end note
+
+@enduml

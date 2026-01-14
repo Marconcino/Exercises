@@ -1,0 +1,78 @@
+@startuml
+title Component Diagram - Sistema Ticketing Cinema
+
+skinparam componentStyle rectangle
+
+' ATTORI
+actor Cliente
+actor Amministratore
+
+' LAYER CLIENT
+package "Layer Presentazione" {
+    [Interfaccia Web] as Web
+    [App Mobile] as Mobile
+}
+
+' SISTEMA PRINCIPALE
+package "Sistema Ticketing Cinema" {
+    
+    ' INTERFACCE
+    interface "IAutenticazione" as IAuth
+    interface "IGestioneFilm" as IFilm
+    interface "IGestionePrenotazioni" as IPrenotazione
+    interface "IPagamento" as IPagamento
+    interface "IGestioneBiglietti" as IBiglietto
+    
+    ' COMPONENTI
+    [Autenticazione] as Auth
+    [Catalogo Film] as Catalog
+    [Gestione Prenotazioni] as Booking
+    [Processore Pagamenti] as Payment
+    [Generatore Biglietti] as Ticket
+    [Servizio Notifiche] as Notify
+    
+    ' CONNESSIONI INTERFACCE
+    IAuth - Auth
+    IFilm - Catalog
+    IPrenotazione - Booking
+    IPagamento - Payment
+    IBiglietto - Ticket
+    
+    ' FLUSSO TRA COMPONENTI
+    Booking --> Catalog : verifica disponibilità
+    Booking --> Payment : richiede pagamento
+    Payment --> Ticket : conferma
+    Ticket --> Notify : invia notifica
+}
+
+' LAYER DATI E SERVIZI ESTERNI
+package "Layer Dati e Servizi" {
+    database "Database Cinema" as DB
+    [Gateway Bancario] as Bank
+    [Server Email] as Email
+}
+
+' CONNESSIONI ATTORI -> CLIENT
+Cliente --> Web
+Cliente --> Mobile
+Amministratore --> Web
+
+' CONNESSIONI CLIENT -> SISTEMA
+Web --> IAuth
+Web --> IFilm
+Web --> IPrenotazione
+
+Mobile --> IAuth
+Mobile --> IFilm
+Mobile --> IPrenotazione
+
+' CONNESSIONI SISTEMA -> LAYER DATI
+Auth --> DB
+Catalog --> DB
+Booking --> DB
+Ticket --> DB
+
+Payment --> Bank
+Notify --> Email
+
+@enduml

@@ -1,0 +1,128 @@
+@startuml
+title Class Diagram - Sistema Ticketing Cinema
+
+' ENUMERAZIONI
+enum StatoPrenotazione {
+    IN_ATTESA
+    CONFERMATA
+    ANNULLATA
+}
+
+enum StatoPagamento {
+    IN_ATTESA
+    AUTORIZZATO
+    RIFIUTATO
+}
+
+' CLASSE CLIENTE
+class Cliente {
+    - idCliente: Integer
+    - nome: String
+    - cognome: String
+    - email: String
+    - password: String
+    + autenticare(): Boolean
+    + visualizzareStoricoOrdini(): List<OrdineAcquisto>
+}
+
+' CLASSE FILM
+class Film {
+    - idFilm: Integer
+    - titolo: String
+    - durata: Integer
+    - genere: String
+    - dataOra: DateTime
+    + getDettagli(): FilmInfo
+    + verificareDisponibilita(): Integer
+}
+
+' CLASSE SALA CINEMA
+class SalaCinema {
+    - idSala: Integer
+    - nomeSala: String
+    - capacitaTotale: Integer
+    + getPostiDisponibili(film: Film): List<Posto>
+    + verificareDisponibilita(film: Film): Integer
+}
+
+' CLASSE POSTO
+class Posto {
+    - idPosto: Integer
+    - fila: String
+    - numero: Integer
+    + isDisponibile(): Boolean
+    + prenotare(): Boolean
+}
+
+' CLASSE ORDINE ACQUISTO
+class OrdineAcquisto {
+    - idOrdine: Integer
+    - dataOrdine: DateTime
+    - importoTotale: Decimal
+    - stato: StatoPrenotazione
+    + calcolareImportoTotale(): Decimal
+    + confermare(): Boolean
+    + annullare(): Boolean
+}
+
+' CLASSE BIGLIETTO
+class Biglietto {
+    - idBiglietto: Integer
+    - codiceBiglietto: String
+    - qrCode: String
+    - prezzo: Decimal
+    + generare(): Boolean
+    + inviareEmail(): Boolean
+}
+
+' CLASSE PAGAMENTO
+class Pagamento {
+    - idPagamento: Integer
+    - importo: Decimal
+    - stato: StatoPagamento
+    - transactionId: String
+    + elaborare(): Boolean
+    + verificareStato(): StatoPagamento
+}
+
+' CLASSE GATEWAY BANCARIO
+class GatewayBancario {
+    - apiKey: String
+    + processarePagamento(importo: Decimal): Boolean
+    + autorizzareTransazione(): String
+}
+
+' RELAZIONI
+
+Cliente "1" --> "0..*" OrdineAcquisto : effettua
+
+OrdineAcquisto "1" --> "1..*" Posto : prenota
+OrdineAcquisto "1" --> "1" Pagamento : richiede
+OrdineAcquisto "1" --> "1..*" Biglietto : genera
+OrdineAcquisto "*" --> "1" Film : si riferisce a
+
+Film "*" --> "1" SalaCinema : programmato in
+
+SalaCinema "1" *-- "1..*" Posto : contiene
+
+Pagamento "1" --> "1" GatewayBancario : utilizza
+
+OrdineAcquisto --> StatoPrenotazione
+Pagamento --> StatoPagamento
+
+note right of SalaCinema
+    Gestisce la disponibilità 
+    dei posti per ogni film
+end note
+
+note right of Film
+    Contiene data/ora della 
+    programmazione del film
+end note
+
+note bottom of Pagamento
+    Comunica con il Gateway Bancario
+    per processare la transazione
+end note
+
+@enduml

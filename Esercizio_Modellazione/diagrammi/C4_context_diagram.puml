@@ -1,0 +1,21 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title C4 - System Context Diagram
+title Context Diagram - Sistema Ticketing Cinema
+
+' === PERSONE ===
+Person(cliente, "Cliente", "Utente finale che acquista biglietti per il cinema")
+
+' === SISTEMA PRINCIPALE ===
+System(ticketing, "Sistema Ticketing Cinema", "Applicazione Python per la gestione dell’acquisto dei biglietti")
+
+' === SISTEMI ESTERNI ===
+System_Ext(banca, "Sistema Bancario", "Sistema esterno per il pagamento elettronico")
+
+' === RELAZIONI ===
+Rel(cliente, ticketing, "Acquista biglietti, consulta film e spettacoli")
+Rel(ticketing, banca, "Richiede autorizzazione pagamento")
+Rel(banca, ticketing, "Restituisce esito pagamento")
+
+@enduml

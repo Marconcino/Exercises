@@ -1,0 +1,55 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title C4 - Component Diagram
+title Backend API - Sistema Ticketing Cinema
+
+' =========================
+' CONTAINER SELEZIONATO
+' =========================
+Container_Boundary(api, "Backend API (FastAPI)") {
+
+    Component(auth, "Auth Component", "Python / FastAPI", "Gestisce autenticazione e registrazione clienti")
+
+    Component(catalog, "Catalogo Film Component", "Python / FastAPI","Gestisce film, spettacoli e disponibilità")
+
+    Component(booking, "Prenotazioni Component", "Python / FastAPI", "Gestisce selezione posti, lock e conferma prenotazioni")
+
+    Component(payment, "Pagamento Component", "Python / FastAPI", "Gestisce richiesta e verifica pagamenti elettronici")
+
+    Component(ticket, "Biglietti Component", "Python / FastAPI", "Genera biglietti digitali con QR Code")
+
+    Component(notification, "Notifiche Component", "Python / FastAPI", "Invia email di conferma e biglietti")
+}
+
+' =========================
+' CONTAINER ESTERNI
+' =========================
+ContainerDb(db, "Database Cinema", "MySQL", "Memorizza utenti, film, prenotazioni, biglietti e pagamenti")
+
+System_Ext(banca, "Sistema Bancario", "Autorizzazione pagamenti")
+
+System_Ext(email, "Email Service", "Invio email transazionali")
+
+' =========================
+' RELAZIONI INTERNE
+' =========================
+Rel(auth, db, "Legge/Scrive utenti")
+Rel(catalog, db, "Legge film e spettacoli")
+Rel(booking, db, "Legge/Scrive prenotazioni e posti")
+Rel(payment, db, "Registra pagamenti")
+Rel(ticket, db, "Registra biglietti")
+Rel(notification, db, "Recupera dati invio")
+
+Rel(booking, catalog, "Verifica disponibilità")
+Rel(booking, payment, "Richiede pagamento")
+Rel(payment, ticket, "Pagamento confermato")
+Rel(ticket, notification, "Richiede invio biglietto")
+
+' =========================
+' RELAZIONI ESTERNE
+' =========================
+Rel(payment, banca, "Richiesta autorizzazione", "HTTPS API")
+Rel(notification, email, "Invia email", "SMTP / API")
+
+@enduml
