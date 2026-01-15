@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # Database
 from app.routers import doctor_router
-from app.database import engine
+from app.db.db import engine
 from app.db.base import Base
 # Routers
 from app.routers import patient_router, appointment_router, visiting_room
@@ -51,9 +51,9 @@ app.include_router(visiting_room.router, prefix = "/visiting-rooms", tags = ["Vi
 
 @app.get("/", tags = ["Health Check"])
 def root():
-    """
-    Simple endpoint to verify that the API is running.
-    """
+    
+    # Simple endpoint to verify that the API is running.
+    
     return {
         "status": "ok",
         "message": "Medical Clinic API is running"

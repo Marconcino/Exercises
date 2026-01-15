@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.db.db import SessionLocal
-from app.schemas.patient_schema import PatientCreate, PatientResponse
+from app.schemas.patient_schema import PatientCreate, PatientRead as PatientResponse
 from app.crud.patient_crud import (
     create_patient,
     get_patient,
@@ -12,8 +12,8 @@ from app.crud.patient_crud import (
 )
 
 router = APIRouter(
-    prefix="/patients",
-    tags=["Patients"]
+    prefix = "/patients",
+    tags = ["Patients"]
 )
 
 # POST
@@ -27,14 +27,14 @@ def create_new_patient(
 
 # GET
 # Retrieve all patients.
-@router.get("/", response_model=List[PatientResponse])
+@router.get("/", response_model = List[PatientResponse])
 def read_all_patients(db: Session = Depends(SessionLocal)):
     return get_patients(db)
 
-# Retrieve patient details and medical history.
-@router.get("/{patient_id}", response_model=PatientResponse)
+# Retrieve patient details by ID
+@router.get("/{patient_id}", response_model = PatientResponse)
 def read_patient(patient_id: int, db: Session = Depends(SessionLocal)):
-    patient = get_patient_by_email(db, patient_id)
+    patient = get_patient(db, patient_id)
     if not patient:
-        raise HTTPException(status_code=404, detail = "No Patient found with the email")
+        raise HTTPException(status_code = 404, detail = "No Patient found with the email")
     return patient
