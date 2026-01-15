@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.visiting_room import VisitingRoom
 
-
 # CREATE
 def create_visiting_room(db: Session, room_number: str, floor: int, equipment: str | None = None) -> VisitingRoom:
     room = VisitingRoom(room_number = room_number, floor = floor, equipment = equipment)

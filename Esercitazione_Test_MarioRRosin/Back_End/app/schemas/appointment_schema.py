@@ -20,14 +20,6 @@ class AppointmentCreate(AppointmentBase):
     pass
 
 
-# UPDATE (solo ciò che ha senso modificare)
-class AppointmentUpdate(BaseModel):
-    date: date | None = None
-    time: time | None = None
-    visit_room_id: int | None = None
-    status: str | None = None
-
-
 # READ
 class AppointmentRead(AppointmentBase):
     id: int
@@ -35,3 +27,11 @@ class AppointmentRead(AppointmentBase):
 
     class Config:
         from_attributes = True
+
+
+# UPDATE (solo ciò che ha senso modificare)
+class AppointmentUpdate(BaseModel):
+    date: date | None = None
+    time: time | None = None
+    visit_room_id: int | None = None
+    status: str | None = None

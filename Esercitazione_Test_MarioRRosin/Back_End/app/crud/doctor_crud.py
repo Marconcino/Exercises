@@ -19,7 +19,7 @@ def get_doctor(db: Session, doctor_id: int) -> Doctor | None:
     return db.query(Doctor).filter(Doctor.id == doctor_id).first()
 
 
-def get_doctors(db: Session, skip: int = 0, limit: int = 100) -> list[Doctor]:
+def get_all_doctors(db: Session, skip: int = 0, limit: int = 100) -> list[Doctor]:
     # Retrieve all doctors with pagination
     return db.query(Doctor).offset(skip).limit(limit).all()
 
