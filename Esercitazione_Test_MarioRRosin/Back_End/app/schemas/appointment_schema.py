@@ -2,6 +2,7 @@
 
 from pydantic import BaseModel
 from datetime import date, time
+from typing import Optional
 
 
 # Base
@@ -9,8 +10,8 @@ class AppointmentBase(BaseModel):
     doctor_id: int
     patient_id: int
     visit_room_id: int
-    date: date
-    time: time
+    date: Optional[date] = None
+    time: Optional[time] = None
     visit_type: str
     duration_minutes: int
 
@@ -20,14 +21,6 @@ class AppointmentCreate(AppointmentBase):
     pass
 
 
-# UPDATE (solo ciò che ha senso modificare)
-class AppointmentUpdate(BaseModel):
-    date: date | None = None
-    time: time | None = None
-    visit_room_id: int | None = None
-    status: str | None = None
-
-
 # READ
 class AppointmentRead(AppointmentBase):
     id: int
@@ -35,3 +28,11 @@ class AppointmentRead(AppointmentBase):
 
     class Config:
         from_attributes = True
+
+
+# UPDATE (solo ciò che ha senso modificare)
+class AppointmentUpdate(BaseModel):
+    date: Optional[date] = None
+    time: time | None = None
+    visit_room_id: int | None = None
+    status: str | None = None

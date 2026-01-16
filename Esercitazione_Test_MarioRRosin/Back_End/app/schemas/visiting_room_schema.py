@@ -10,9 +10,16 @@ class VisitRoomBase(BaseModel):
 
 
 # CREATE
-class VisitRoomCreate(VisitRoomBase):
+class VisitingRoomCreate(VisitRoomBase):
     pass
 
+
+# READ (Response)
+class VisitRoomRead(VisitRoomBase):
+    id: int
+
+    class Config:
+        from_attributes = True
 
 # UPDATE
 class VisitRoomUpdate(BaseModel):
@@ -20,9 +27,3 @@ class VisitRoomUpdate(BaseModel):
     equipment: str | None = None
 
 
-# READ
-class VisitRoomRead(VisitRoomBase):
-    id: int
-
-    class Config:
-        from_attributes = True
