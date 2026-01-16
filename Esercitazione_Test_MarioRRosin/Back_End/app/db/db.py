@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 # This has the task to connect to the database created on MySQL
 # Make sure to replace the user, password, host, port, and database name as needed
 DATABASE_URL = (
-    "mysql+mysqlconnector://user_service_db:SQLsql!!!@localhost:3306/medical_clinic_db"
+    "mysql+mysqlconnector://root:root@localhost:3306/medical_clinic"
 )
 
 engine = create_engine(
@@ -21,3 +21,10 @@ SessionLocal = sessionmaker(
 )
 
 Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

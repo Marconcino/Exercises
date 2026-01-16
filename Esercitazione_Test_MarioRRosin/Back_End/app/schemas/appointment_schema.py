@@ -1,7 +1,7 @@
 # Appointment schemas for visiting rooms
 
 from pydantic import BaseModel
-from datetime import date, time
+from datetime import date, time as dt_time
 from typing import Optional
 
 
@@ -11,7 +11,7 @@ class AppointmentBase(BaseModel):
     patient_id: int
     visit_room_id: int
     date: Optional[date] = None
-    time: Optional[time] = None
+    time: Optional[dt_time] = None
     visit_type: str
     duration_minutes: int
 
@@ -30,9 +30,9 @@ class AppointmentRead(AppointmentBase):
         from_attributes = True
 
 
-# UPDATE (solo ciò che ha senso modificare)
+# UPDATE
 class AppointmentUpdate(BaseModel):
     date: Optional[date] = None
-    time: time | None = None
-    visit_room_id: int | None = None
-    status: str | None = None
+    time: Optional[dt_time] = None
+    visit_room_id: Optional[int] = None
+    status: Optional[str] = None

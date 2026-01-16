@@ -11,7 +11,8 @@ class PatientBase(BaseModel):
     birth_date: date
     email: EmailStr
     phone_number: str
-    emergency_contact: str | None = None
+    emergency_contact_name: str | None = None
+    emergency_contact_phone: str | None = None
 
 
 # CREATE

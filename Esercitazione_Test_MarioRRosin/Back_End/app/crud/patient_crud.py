@@ -3,13 +3,16 @@ from app.models.patient import Patient
 
 
 # CREATE
-def create_patient(db: Session, first_name: str, last_name: str, birth_date, email: str, phone_number: str, emergency_contact: str | None = None) -> Patient:
-    patient = Patient(first_name = first_name,
+def create_patient(db: Session, first_name: str, last_name: str, birth_date, email: str, 
+                   phone_number: str, emergency_contact_name: str | None = None, emergency_contact_phone: str | None = None) -> Patient:
+    patient = Patient(
+        first_name = first_name,
         last_name = last_name,
         birth_date = birth_date,
         email = email,
         phone_number = phone_number,
-        emergency_contact = emergency_contact
+        emergency_contact_name = emergency_contact_name,
+        emergency_contact_phone = emergency_contact_phone
     )
     db.add(patient)
     db.commit()

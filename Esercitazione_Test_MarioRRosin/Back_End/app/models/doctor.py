@@ -11,6 +11,6 @@ class Doctor(Base):
     email: Mapped[str] = mapped_column(String(150), unique = True, nullable = False)
     phone_number: Mapped[str] = mapped_column(String(20), unique = True, nullable = False)
     specialization: Mapped[str] = mapped_column(String(100), nullable = False)
-
+    
     # Availability stored as JSON/text (can be refined later)
     availability: Mapped[str] = mapped_column(Text, nullable = False)

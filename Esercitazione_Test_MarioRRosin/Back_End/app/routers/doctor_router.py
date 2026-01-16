@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.db.db import SessionLocal
+from app.db.db import get_db
 from app.schemas.doctor_schema import DoctorCreate, DoctorRead as DoctorResponse
 from app.crud.doctor_crud import (
     create_doctor,
@@ -20,13 +20,15 @@ router = APIRouter(
 @router.post("/", response_model = DoctorResponse)
 def create_new_doctor(
     doctor: DoctorCreate,
-    db: Session = Depends(SessionLocal)
+    db: Session = Depends(get_db)
 ):
-
-    # Create a new doctor
+# Create a new doctor
     return create_doctor(
         db = db,
-        full_name = doctor.full_name,
+        first_name = doctor.first_name,
+        last_name = doctor.last_name,
+        email = doctor.email,
+        phone_number = doctor.phone_number,
         specialization = doctor.specialization,
         availability = doctor.availability
     )
@@ -34,12 +36,12 @@ def create_new_doctor(
 
 # Retrieve all doctors.
 @router.get("/", response_model=List[DoctorResponse])
-def read_all_doctors(db: Session = Depends(SessionLocal)):
+def read_all_doctors(db: Session = Depends(get_db)):
     return get_all_doctors(db)
 
 # Retrieve a doctor by ID
 @router.get("/{doctor_id}", response_model = DoctorResponse)
-def read_doctor(doctor_id: int, db: Session = Depends(SessionLocal)):
+def read_doctor(doctor_id: int, db: Session = Depends(get_db)):
     doctor = get_doctor(db, doctor_id)
     if not doctor:
         raise HTTPException(status_code=404, detail = "Doctor not found")

@@ -5,9 +5,12 @@ from app.models.doctor import Doctor
 
 
 # CREATE
-def create_doctor( db: Session, full_name: str, specialization: str, availability: str) -> Doctor:
+def create_doctor(db: Session, first_name: str, last_name: str, email: str, 
+                  phone_number: str, specialization: str, availability: str) -> Doctor:
     # Create a new doctor
-    doctor = Doctor(full_name = full_name, specialization = specialization, availability = availability)
+    doctor = Doctor(first_name = first_name, last_name = last_name, email = email, 
+                    phone_number = phone_number, specialization = specialization,
+                    availability = availability)
     db.add(doctor)
     db.commit()
     db.refresh(doctor)

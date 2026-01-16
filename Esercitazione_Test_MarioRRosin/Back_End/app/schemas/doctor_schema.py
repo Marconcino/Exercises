@@ -3,7 +3,10 @@ from pydantic import BaseModel
 
 # Base schema (shared fields)
 class DoctorBase(BaseModel):
-    full_name: str
+    first_name: str
+    last_name: str
+    email: str
+    phone_number: str
     specialization: str
     availability: str
 
@@ -15,7 +18,10 @@ class DoctorCreate(DoctorBase):
 
 # UPDATE
 class DoctorUpdate(BaseModel):
-    full_name: str | None = None
+    first_name: str | None = None
+    last_name: str | None = None
+    email: str | None = None
+    phone_number: str | None = None
     specialization: str | None = None
     availability: str | None = None
 
