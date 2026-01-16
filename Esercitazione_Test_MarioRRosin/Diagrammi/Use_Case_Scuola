@@ -1,0 +1,21 @@
+@startuml
+title Use Case Diagramm - Scuola di Lingue
+
+actor Studente
+actor AmministrazioneDidattica
+actor SistemaInformatico
+
+usecase "Gestione Corsi e Classi" as UC1
+usecase "Iscrizione alla Classe" as UC2
+usecase "Assegnazione Docente" as UC3
+
+' Relazioni attori '
+Studente --> UC2
+AmministrazioneDidattica --> UC1
+AmministrazioneDidattica --> UC3
+
+SistemaInformatico --> UC1
+SistemaInformatico --> UC2
+SistemaInformatico --> UC3
+
+@enduml
