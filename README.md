@@ -1,3 +1,8 @@
-# Exercises
-This is a repository with the intent to understand the adding, the pulling or the pushing of the exercises we do in class
-Also a way to practice any type of exercise 
+# Restaurant Booking App
+Welcome to FlyingBees Pizzeria
+
+To start your APIs booking type this line of code on the terminal:
+python -m uvicorn main:app --reload
+
+To start the front end:
+npm run dev
