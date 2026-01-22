@@ -20,9 +20,3 @@ function test() {
 }
 test();
 */
-
-// Variabili
-let message;
-message = 'Hello';
-alert(message); // Mostra Hello
-
