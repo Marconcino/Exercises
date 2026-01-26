@@ -1,9 +1,14 @@
 // Input \&\& output
 
 // 1. Chiedi il nome all’utente e stampalo.
-
+let nome = prompt("Come ti chiami? ");
+console.log("Ciao " + nome);
 
 // 2. Chiedi due numeri e stampa la loro somma.
+let num_1 = prompt("Gimme a first number: ");
+let num_2 = prompt("Gimme a second number: ");
+console.log("The resul of the sum of", `${num_1}`, "and", `${num_2}`, "is = ", num_1 + num_2 );
+
 // 3. Chiedi un numero e stampa il suo quadrato.
 // 4. Chiedi l’età e calcola l’anno di nascita.
 
