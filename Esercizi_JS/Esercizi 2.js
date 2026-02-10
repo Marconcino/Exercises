@@ -10,8 +10,13 @@ let num_2 = prompt("Gimme a second number: ");
 console.log("The resul of the sum of", `${num_1}`, "and", `${num_2}`, "is = ", num_1 + num_2 );
 
 // 3. Chiedi un numero e stampa il suo quadrato.
-// 4. Chiedi l’età e calcola l’anno di nascita.
+let num_3 = prompt("Give me a number: ");
+console.log(num_3);
+console.log("The square number of", `${num_3}`, "is: ", num_3 ** 3);
 
+// 4. Chiedi l’età e calcola l’anno di nascita.
+let age = prompt("How old are u? ");
+console.log(age);
 
 // 5. Chiedi base e altezza e calcola l’area di un rettangolo.
 // 6. Chiedi un numero e stampa il doppio e il triplo.
